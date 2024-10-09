@@ -13,10 +13,10 @@
 # limitations under the License.
 
 locals {
-  gcp_project_id = "" # Example: "your-gcp-project-123"
-  environment    = "" # # Must be <= 3 characters. Example: "abc"
-  image_repo     = "" # Example: "us-docker.pkg.dev/your-gcp-project-123/services"
-
+  gcp_project_id = "arched-inkwell-368821"                                # Example: "your-gcp-project-123"
+  environment    = "non-prod"                                             # # Must be <= 3 characters. Example: "abc"
+  image_repo     = "us-east4-docker.pkg.dev/arched-inkwell-368821/seller" # Example: "us-docker.pkg.dev/your-gcp-project-123/services"
+  seller_json    = jsondecode(file("${path.module}/seller_input.json"))
 }
 
 provider "google" {
@@ -55,47 +55,45 @@ module "seller" {
     SFE_INGRESS_TLS                  = "false"          # Do not change unless you are modifying the default GCP architecture.
     BUYER_EGRESS_TLS                 = "true"           # Do not change unless you are modifying the default GCP architecture.
     AUCTION_EGRESS_TLS               = "false"          # Do not change unless you are modifying the default GCP architecture.
-    TEST_MODE                        = "false"          # Do not change unless you are testing without key fetching.
+    TEST_MODE                        = "true"          # Do not change unless you are testing without key fetching.
 
-    ENABLE_AUCTION_SERVICE_BENCHMARK       = "" # Example: "false"
-    GET_BID_RPC_TIMEOUT_MS                 = "" # Example: "60000"
-    KEY_VALUE_SIGNALS_FETCH_RPC_TIMEOUT_MS = "" # Example: "60000"
-    SCORE_ADS_RPC_TIMEOUT_MS               = "" # Example: "60000"
-    SELLER_ORIGIN_DOMAIN                   = "" # Example: "https://sellerorigin.com"
-    KEY_VALUE_SIGNALS_HOST                 = "" # Example: "https://keyvaluesignals.com/trusted-signals"
-    BUYER_SERVER_HOSTS                     = "" # Example: "{ \"https://example-bidder.com\": { \"url\": \"dns:///bidding-service-host:443\", \"cloudPlatform\": \"GCP\" } }"
-    SELLER_CLOUD_PLATFORMS_MAP             = "" # Example: "{ \"https://partner-seller1.com\": "GCP", \"https://partner-seller2.com\": "AWS"}"
-    ENABLE_SELLER_FRONTEND_BENCHMARKING    = "" # Example: "false"
-    ENABLE_AUCTION_COMPRESSION             = "" # Example: "false"
-    ENABLE_BUYER_COMPRESSION               = "" # Example: "false"
-    ENABLE_PROTECTED_APP_SIGNALS           = "" # Example: "false"
-    ENABLE_PROTECTED_AUDIENCE              = "" # Example: "true"
-    PS_VERBOSITY                           = "" # Example: "10"
-    CREATE_NEW_EVENT_ENGINE                = "" # Example: "false"
-    SELLER_CODE_FETCH_CONFIG               = "" # Example:
+    ENABLE_AUCTION_SERVICE_BENCHMARK       = "false"                                                                                                                                    # Example: "false"
+    GET_BID_RPC_TIMEOUT_MS                 = "60000"                                                                                                                                    # Example: "60000"
+    KEY_VALUE_SIGNALS_FETCH_RPC_TIMEOUT_MS = "60000"                                                                                                                                    # Example: "60000"
+    SCORE_ADS_RPC_TIMEOUT_MS               = "60000"                                                                                                                                    # Example: "60000"
+    SELLER_ORIGIN_DOMAIN                   = "https://privacy-sandbox-demos-ssp-x.dev/"                                                                                                 # Example: "https://sellerorigin.com"
+    KEY_VALUE_SIGNALS_HOST                 = "https://privacy-sandbox-demos-ssp-x.dev/service/kv"                                                                                       # Example: "https://keyvaluesignals.com/trusted-signals"
+    BUYER_SERVER_HOSTS                     = "{ \"https://privacy-sandbox-demos-dsp-x.dev\": { \"url\": \"dns:///privacy-sandbox-demos-dsp-x.dev:443\", \"cloudPlatform\": \"GCP\" } }" # Example: "{ \"https://example-bidder.com\": { \"url\": \"dns:///bidding-service-host:443\", \"cloudPlatform\": \"GCP\" } }"
+    SELLER_CLOUD_PLATFORMS_MAP             = "{}"                                                                                                                                       # Example: "{ \"https://partner-seller1.com\": "GCP", \"https://partner-seller2.com\": "AWS"}"
+    ENABLE_SELLER_FRONTEND_BENCHMARKING    = "false"                                                                                                                                    # Example: "false"
+    ENABLE_AUCTION_COMPRESSION             = "false"                                                                                                                                    # Example: "false"
+    ENABLE_BUYER_COMPRESSION               = "false"                                                                                                                                    # Example: "false"
+    ENABLE_PROTECTED_APP_SIGNALS           = "false"                                                                                                                                    # Example: "false"
+    ENABLE_PROTECTED_AUDIENCE              = "true"                                                                                                                                     # Example: "true"
+    PS_VERBOSITY                           = "10"                                                                                                                                       # Example: "10"
+    CREATE_NEW_EVENT_ENGINE                = "false"                                                                                                                                    # Example: "false"
+    SELLER_CODE_FETCH_CONFIG               = "{\"fetchMode\": 0,\"auctionJsPath\": \"\",\"auctionJsUrl\": \"https://storage.googleapis.com/ba-test-seller/scoreAd.js\",\"urlFetchPeriodMs\": 13000000,\"urlFetchTimeoutMs\": 30000,\"enableSellerDebugUrlGeneration\": true,\"enableReportResultUrlGeneration\": true,\"enableReportWinUrlGeneration\": true,\"enablePrivateAggregateReporting\": false,\"buyerReportWinJsUrls\": {\"https://td.doubleclick.net/\":\"https://td.doubleclick.net/td/bjs\"},\"protectedAppSignalsBuyerReportWinJsUrls\": {\"https://td.doubleclick.net/\":\"https://td.doubleclick.net/td/bjs\"}}"
     # "{
     #     "fetchMode": 0,
     #     "auctionJsPath": "",
-    #     "auctionJsUrl": "https://example.com/scoreAd.js",
+    #     "auctionJsUrl": "https://storage.googleapis.com/ba-test-seller/scoreAd.js",
     #     "urlFetchPeriodMs": 13000000,
     #     "urlFetchTimeoutMs": 30000,
     #     "enableSellerDebugUrlGeneration": true,
     #     "enableReportResultUrlGeneration": true,
     #     "enableReportWinUrlGeneration": true,
     #     "enablePrivateAggregateReporting": false,
-    #     "buyerReportWinJsUrls": {"https://buyerA_origin.com":"https://buyerA.com/generateBid.js",
-    #                              "https://buyerB_origin.com":"https://buyerB.com/generateBid.js",
-    #                              "https://buyerC_origin.com":"https://buyerC.com/generateBid.js"},
-    #     "protectedAppSignalsBuyerReportWinJsUrls": {"https://buyerA_origin.com":"https://buyerA.com/generateBid.js"}
+    #     "buyerReportWinJsUrls": {"https://td.doubleclick.net/":"https://td.doubleclick.net/td/bjs"},                
+    #     "protectedAppSignalsBuyerReportWinJsUrls": {"https://td.doubleclick.net/":"https://td.doubleclick.net/td/bjs"}
     #  }"
-    JS_NUM_WORKERS                  = "" # Example: "64" Must be <=vCPUs in auction_machine_type.
-    JS_WORKER_QUEUE_LEN             = "" # Example: "200".
-    ROMA_TIMEOUT_MS                 = "" # Example: "10000"
-    TELEMETRY_CONFIG                = "" # Example: "mode: EXPERIMENT"
-    COLLECTOR_ENDPOINT              = "" # Example: "collector-seller-1-${local.environment}.sfe-gcp.com:4317"
-    ENABLE_OTEL_BASED_LOGGING       = "" # Example: "false"
-    CONSENTED_DEBUG_TOKEN           = "" # Example: "<unique_id>"
-    ENABLE_REPORT_WIN_INPUT_NOISING = "" # Example: "true"
+    JS_NUM_WORKERS                  = "64"                                                       # Example: "64" Must be <=vCPUs in auction_machine_type.
+    JS_WORKER_QUEUE_LEN             = "200"                                                      # Example: "200".
+    ROMA_TIMEOUT_MS                 = "10000"                                                    # Example: "10000"
+    TELEMETRY_CONFIG                = "mode: EXPERIMENT"                                         # Example: "mode: EXPERIMENT"
+    COLLECTOR_ENDPOINT              = "collector-seller-1-${local.environment}.sfe-gcp.com:4317" # What is this?  Example: "collector-seller-1-${local.environment}.sfe-gcp.com:4317"
+    ENABLE_OTEL_BASED_LOGGING       = "false"                                                    # Example: "false"
+    CONSENTED_DEBUG_TOKEN           = "test"                                                         # What is this? Example: "<unique_id>"
+    ENABLE_REPORT_WIN_INPUT_NOISING = "true"                                                     # Example: "true"
     # Coordinator-based attestation flags.
     # These flags are production-ready and you do not need to change them.
     # Reach out to the Privacy Sandbox B&A team to enroll with Coordinators.
@@ -123,8 +121,8 @@ module "seller" {
 
     SFE_TLS_KEY                        = module.secrets.tls_key  # You may remove the secrets module and instead either inline or use an auto.tfvars for this variable.
     SFE_TLS_CERT                       = module.secrets.tls_cert # You may remove the secrets module and instead either inline or use an auto.tfvars for this variable.
-    MAX_ALLOWED_SIZE_DEBUG_URL_BYTES   = ""                      # Example: "65536"
-    MAX_ALLOWED_SIZE_ALL_DEBUG_URLS_KB = ""                      # Example: "3000"
+    MAX_ALLOWED_SIZE_DEBUG_URL_BYTES   = "65536"                      # Example: "65536"
+    MAX_ALLOWED_SIZE_ALL_DEBUG_URLS_KB = "3000"                      # Example: "3000"
 
     # TCMalloc related config parameters.
     # See: https://github.com/google/tcmalloc/blob/master/docs/tuning.md
@@ -135,14 +133,14 @@ module "seller" {
   }
 
   # Please manually create a Google Cloud domain name, dns zone, and SSL certificate.
-  frontend_domain_name               = ""    # Example: sfe-gcp.com
-  frontend_dns_zone                  = ""    # Example: "sfe-gcp-com"
-  frontend_domain_ssl_certificate_id = ""    # Example: "projects/${local.gcp_project_id}/global/sslCertificates/sfe-${local.environment}"
-  operator                           = ""    # Example: "seller-1"
-  service_account_email              = ""    # Example: "terraform-sa@{local.gcp_project_id}.iam.gserviceaccount.com"
-  vm_startup_delay_seconds           = 200   # Example: 200
-  cpu_utilization_percent            = 0.6   # Example: 0.6
-  use_confidential_space_debug_image = false # Example: false
+  frontend_domain_name               = "ba-test-seller.com"                                                               # TODO: Severin to create with corpEng
+  frontend_dns_zone                  = "ba-test-seller-com"                                                               # Example: "sfe-gcp-com"
+  frontend_domain_ssl_certificate_id = "projects/${local.gcp_project_id}/global/sslCertificates/google-managed-seller" # Example: "projects/${local.gcp_project_id}/global/sslCertificates/sfe-${local.environment}"
+  operator                           = "seller-1"                                                                         # what is this? Example: "seller-1"
+  service_account_email              = "bidding-auction-seller@${local.gcp_project_id}.iam.gserviceaccount.com"            # Example: "terraform-sa@{local.gcp_project_id}.iam.gserviceaccount.com"
+  vm_startup_delay_seconds           = 200                                                                                # Example: 200
+  cpu_utilization_percent            = 0.6                                                                                # Example: 0.6
+  use_confidential_space_debug_image = true                                                                              # Example: false
   tee_impersonate_service_accounts   = "a-opallowedusr@ps-pa-coord-prd-g3p-svcacc.iam.gserviceaccount.com,b-opallowedusr@ps-prod-pa-type2-fe82.iam.gserviceaccount.com"
   collector_service_port             = 4317
   collector_startup_script = templatefile("../../../services/autoscaling/collector_startup.tftpl", {
@@ -151,8 +149,8 @@ module "seller" {
     gcs_hmac_key             = module.secrets.gcs_hmac_key
     gcs_hmac_secret          = module.secrets.gcs_hmac_secret
     gcs_bucket               = "" # Example: ${name of a gcs bucket}
-    gcs_bucket_prefix        = "" # Example: "consented-eventmessage-${local.environment}"
-    file_prefix              = "" # Example: "operator-name"
+    gcs_bucket_prefix        = "consented-eventmessage-${local.environment}" # Example: "consented-eventmessage-${local.environment}"
+    file_prefix              = "operator-name" # Example: "operator-name"
   })
   region_config = {
     # Example config provided for us-central1 and you may add your own regions.
