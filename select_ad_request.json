@@ -9,7 +9,7 @@
                 "buyer_signals": "{}"
             }
         },
-        "seller": "https://privacy-sandbox-demos-ssp-x.dev/",
+        "seller": "https://seller.domain.com",
         "seller_debug_id": "Seller-Debug-ID-Useful-For-Debugging",
         "seller_signals": "[]"
     },
