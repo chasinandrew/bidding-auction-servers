@@ -66,18 +66,21 @@ echo "Using libcddl path: ${cddl_path}"
 
 source $(dirname "$0")/common
 declare -a -r DOCKER_RUN_ARGS=(
+  "--volume=${PROJECT_ROOT}:/bidding-logic.js"
   "--volume=${cddl_path}:/usr/lib/libcddl.so"
   "--volume=${PROJECT_ROOT}/bazel-bin/services/bidding_service/server:/server"
   "--volume=${PROJECT_ROOT}/services/bidding_service/egress_cddl_spec:/egress_cddl_spec"
   "--volume=${PROJECT_ROOT}/services/inference_sidecar/modules/pytorch_v2_1_1/artifacts/inference_sidecar_pytorch_v2_1_1:/inference_sidecar_pytorch_v2_1_1"
   "--volume=${PROJECT_ROOT}/services/inference_sidecar/common/testdata/models/pytorch_generate_bid_model.pt:/generate_bid_model"
   "--name=bidding"
+  "--publish 50057:50057"
 )
 export EXTRA_DOCKER_RUN_ARGS="${COMMON_DOCKER_RUN_ARGS[@]} ${DOCKER_RUN_ARGS[@]}"
 
 echo $EXTRA_DOCKER_RUN_ARGS
 
 export INFERENCE_BIDDING_JS_PATH="/src/workspace/services/inference_sidecar/common/tools/debug/generateBidRunInference.js"
+export BIDDING_JS_URL="https://td.doubleclick.net/td/bjs"
 
 export BUYER_CODE_FETCH_CONFIG=$(cat << END
 {
@@ -129,7 +132,7 @@ export SERVER_START_CMD=$(cat << END
 --js_num_workers=4 \
 --js_worker_queue_len=100 \
 --test_mode="true" \
---telemetry_config="mode: EXPERIMENT" \
+--telemetry_config="mode: OFF" \
 --roma_timeout_ms="120000" \
 --egress_schema_fetch_config='{
       "fetchMode": 0,
@@ -139,8 +142,8 @@ export SERVER_START_CMD=$(cat << END
       "urlFetchTimeoutMs": 30000,
     }' \
 --buyer_code_fetch_config='${BUYER_CODE_FETCH_CONFIG}' \
---enable_protected_app_signals="true" \
---enable_otel_based_logging="true" \
+--enable_protected_app_signals="false" \
+--enable_otel_based_logging="false" \
 --consented_debug_token="test_token" \
 --enable_protected_audience="true" \
 --tee_ad_retrieval_kv_server_addr="localhost:50057" \
@@ -154,8 +157,8 @@ END
 
 if [[ ${USE_GDB} -eq 1 ]]; then
   ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined \
-  --docker-network host --image build-debian \
+  --docker-network test --image build-debian \
   --cmd "apt-get update && apt-get -y install gdb && gdb -ex=r --args ${SERVER_START_CMD}"
 else
-  ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined  --docker-network host --image build-debian --cmd  "${SERVER_START_CMD}"
+  ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined --verbose --docker-network test --image build-debian --cmd  "${SERVER_START_CMD}"
 fi

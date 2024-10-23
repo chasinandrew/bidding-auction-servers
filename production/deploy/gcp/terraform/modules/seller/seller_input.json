@@ -1,0 +1,13 @@
+{
+    "fetchMode": 0,
+    "auctionJsPath": "",
+    "auctionJsUrl": "https://storage.googleapis.com/ba-test-seller/scoreAd.js",
+    "urlFetchPeriodMs": 13000000,
+    "urlFetchTimeoutMs": 30000,
+    "enableSellerDebugUrlGeneration": true,
+    "enableReportResultUrlGeneration": true,
+    "enableReportWinUrlGeneration": true,
+    "enablePrivateAggregateReporting": false,
+    "buyerReportWinJsUrls": {"https://td.doubleclick.net/":"https://td.doubleclick.net/td/bjs"},                
+    "protectedAppSignalsBuyerReportWinJsUrls": {"https://td.doubleclick.net/":"https://td.doubleclick.net/td/bjs"}
+ }

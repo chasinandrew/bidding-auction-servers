@@ -25,11 +25,11 @@ export SERVER_START_CMD=$(cat << END
 /server \
 --init_config_client="false" --port=50053 \
 --auction_server_host="127.0.0.1:50061" \
---key_value_signals_host="${KEY_VALUE_SIGNALS_HOST}" \
---seller_origin_domain="${SELLER_ORIGIN_DOMAIN}" \
+--key_value_signals_host="td.doubleclick.net/td/bjs" \
+--seller_origin_domain="seller.domain.com" \
 --seller_cloud_platforms_map='{"component-seller1.com":"GCP", "component-seller2.com":"AWS"}' \
 --buyer_server_hosts='{
-  "${BUYER_SERVER_HOST}": {
+  "test.buyer.com": {
     "url": "127.0.0.1:50051",
     "cloudPlatform": "LOCAL"
   }
@@ -40,7 +40,7 @@ export SERVER_START_CMD=$(cat << END
 --create_new_event_engine="false" \
 --test_mode="true" \
 --enable_chaffing="false" \
---telemetry_config="mode: EXPERIMENT" \
+--telemetry_config="mode: OFF" \
 --enable_otel_based_logging="true" \
 --consented_debug_token="test_token" \
 --ps_verbosity=2 \
@@ -53,8 +53,8 @@ END
 
 if [[ $1 == "--gdb" ]]; then
   ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined \
-  --docker-network host --image build-debian \
+  --docker-network test --image build-debian \
   --cmd "apt-get update && apt-get -y install gdb && gdb -ex=r --args ${SERVER_START_CMD}"
 else
-  ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined  --docker-network host --image build-debian --cmd  "${SERVER_START_CMD}"
+  ${PROJECT_ROOT}/builders/tools/cbuild --verbose --seccomp-unconfined  --docker-network test --image build-debian --cmd  "${SERVER_START_CMD}"
 fi

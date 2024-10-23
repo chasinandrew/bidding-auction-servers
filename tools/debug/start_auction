@@ -20,6 +20,7 @@ declare -a -r DOCKER_RUN_ARGS=(
   "--name=auction"
 )
 export EXTRA_DOCKER_RUN_ARGS="${COMMON_DOCKER_RUN_ARGS[@]} ${DOCKER_RUN_ARGS[@]}"
+#fetchMode 2 is local 
 
 export SERVER_START_CMD=$(cat << END
 /server \
@@ -29,37 +30,37 @@ export SERVER_START_CMD=$(cat << END
 --js_num_workers=4 \
 --js_worker_queue_len=100 \
 --test_mode="true" \
---telemetry_config="mode: EXPERIMENT" \
+--telemetry_config="mode: OFF" \
 --roma_timeout_ms="120000" \
 --enable_report_win_input_noising="false" \
 --seller_code_fetch_config='{
       "fetchMode": 0,
       "auctionJsPath": "",
-      "auctionJsUrl": "${AUCTION_JS_URL}",
+      "auctionJsUrl": "https://td.doubleclick.net/td/bjs",
       "urlFetchPeriodMs": 13000000,
       "urlFetchTimeoutMs": 30000,
       "enableSellerDebugUrlGeneration": true,
       "enableReportResultUrlGeneration": true,
       "enableReportWinUrlGeneration": true,
       "enablePrivateAggregateReporting": false,
-      "buyerReportWinJsUrls": {"${BUYER_REPORT_WIN_URL}":"${BUYER_REPORT_WIN_SCRIPT}"},
-      "protectedAppSignalsBuyerReportWinJsUrls": {"${BUYER_REPORT_WIN_URL}":"https://storage.googleapis.com/wasm-explorer/PAS/PASreportWin.js"}
+      "buyerReportWinJsUrls": {"https://test.buyer.com":"buyer-script.js"},
+      "protectedAppSignalsBuyerReportWinJsUrls": {"https://test.buyer.com":"https://storage.googleapis.com/wasm-explorer/PAS/PASreportWin.js"}
     }' \
---enable_otel_based_logging="true" \
+--enable_otel_based_logging="false" \
 --consented_debug_token="test_token" \
 --ps_verbosity=2 \
 --enable_protected_audience="true" \
 --auction_tcmalloc_background_release_rate_bytes_per_second=4096 \
 --auction_tcmalloc_max_total_thread_cache_bytes=10737418240 \
---enable_protected_app_signals="true" && exit
+--enable_protected_app_signals="false" && exit
 END
 )
 
 
 if [[ $1 == "--gdb" ]]; then
   ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined \
-  --docker-network host --image build-debian \
+  --docker-network test --image build-debian \
   --cmd "apt-get update && apt-get -y install gdb && gdb -ex=r --args ${SERVER_START_CMD}"
 else
-  ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined  --docker-network host --image build-debian --cmd  "${SERVER_START_CMD}"
+  ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined  --docker-network test --image build-debian --cmd  "${SERVER_START_CMD}"
 fi

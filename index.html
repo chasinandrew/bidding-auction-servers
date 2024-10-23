@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ad-Platform: DSP-A for advertiser</title>
+  <link rel="stylesheet" href="/css/index.css" />
+  <link rel="icon" href="/img/spy.svg" />
+</head>
+
+<body>
+  <h1>Ad-Platform: DSP-A for advertiser</h1>
+  <section>
+    <h2>Demand Side Platform</h2>
+    <p>DSP provides 3rd party tag which join user into interest group via Protected Audience API</p>
+    <script src="https://privacy-sandbox-demos-dsp-a.dev:443/dsp-tag.js" class="dsp_tag" data-advertiser="privacy-sandbox-demos-shop.dev" data-id="1f45e" data-script="afterInteractive">
+    </script>
+    <h2>inside iframe</h2>
+    <ul>
+      <li>
+        <a target="_blank" href="https://privacy-sandbox-demos-dsp-a.dev:443/join-ad-interest-group.html?advertiser=privacy-sandbox-demos-shop.dev&amp;id=1f45e">
+          https://privacy-sandbox-demos-dsp-a.dev:443/join-ad-interest-group.html?advertiser=privacy-sandbox-demos-shop.dev&amp;id=1f45e
+        </a>
+      </li>
+      <li>
+        <a target="_blank" href="https://privacy-sandbox-demos-dsp-a.dev:443/js/join-ad-interest-group.js">
+          https://privacy-sandbox-demos-dsp-a.dev:443/js/join-ad-interest-group.js
+        </a>
+      </li>
+    </ul>
+    <h2>embed script</h2>
+    <p>3rd party script provided by ssp should embed as below</p>
+    <pre>&lt;script
+  src="https://privacy-sandbox-demos-dsp-a.dev:443/dsp-tag.js"
+  class="dsp_tag"
+  data-advertiser="privacy-sandbox-demos-shop.dev"
+  data-id="1f45e"
+  data-script="afterInteractive"&gt;
+&lt;/script&gt;</pre>
+
+  </section>
+</body>
+
+</html>

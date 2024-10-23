@@ -301,7 +301,7 @@ timeout ${LONG_RUNNING_CONTAINER_TIMEOUT} tail --pid=\${pid} -f /dev/null
   running_container_for "${DOCKER_CONTAINER_NAME}"
 }
 
-if [[ ${KEEP_CONTAINER_RUNNING} -eq 1 ]]; then
+if [[ ${KEEP_CONTAINER_RUNNING} -eq 999 ]]; then
   if [[ -z ${CMD} ]]; then
     # shellcheck disable=SC2068
     docker run \
