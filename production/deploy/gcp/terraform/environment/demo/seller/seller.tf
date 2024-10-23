@@ -86,7 +86,7 @@ module "seller" {
     #     "buyerReportWinJsUrls": {"https://td.doubleclick.net/":"https://td.doubleclick.net/td/bjs"},                
     #     "protectedAppSignalsBuyerReportWinJsUrls": {"https://td.doubleclick.net/":"https://td.doubleclick.net/td/bjs"}
     #  }"
-    JS_NUM_WORKERS                  = "64"                                                       # Example: "64" Must be <=vCPUs in auction_machine_type.
+    UDF_NUM_WORKERS                  = "64"                                                       # Example: "64" Must be <=vCPUs in auction_machine_type.
     JS_WORKER_QUEUE_LEN             = "200"                                                      # Example: "200".
     ROMA_TIMEOUT_MS                 = "10000"                                                    # Example: "10000"
     TELEMETRY_CONFIG                = "mode: EXPERIMENT"                                         # Example: "mode: EXPERIMENT"
@@ -94,6 +94,14 @@ module "seller" {
     ENABLE_OTEL_BASED_LOGGING       = "false"                                                    # Example: "false"
     CONSENTED_DEBUG_TOKEN           = "test"                                                         # What is this? Example: "<unique_id>"
     ENABLE_REPORT_WIN_INPUT_NOISING = "true"                                                     # Example: "true"
+    UDF_NUM_WORKERS                 = "" # Example: "64" Must be <=vCPUs in auction_machine_type.
+    JS_WORKER_QUEUE_LEN             = "" # Example: "200".
+    ROMA_TIMEOUT_MS                 = "" # Example: "10000"
+    TELEMETRY_CONFIG                = "" # Example: "mode: EXPERIMENT"
+    COLLECTOR_ENDPOINT              = "" # Example: "collector-seller-1-${local.environment}.sfe-gcp.com:4317"
+    ENABLE_OTEL_BASED_LOGGING       = "" # Example: "false"
+    CONSENTED_DEBUG_TOKEN           = "" # Example: "<unique_id>"
+    ENABLE_REPORT_WIN_INPUT_NOISING = "" # Example: "true"
     # Coordinator-based attestation flags.
     # These flags are production-ready and you do not need to change them.
     # Reach out to the Privacy Sandbox B&A team to enroll with Coordinators.
@@ -133,9 +141,13 @@ module "seller" {
   }
 
   # Please manually create a Google Cloud domain name, dns zone, and SSL certificate.
+  # See demo/project_setup_utils/domain_setup/README.md for more details.
+  # If you specify a certificate_map_id, you do not need to specify an ssl_certificate_id.
   frontend_domain_name               = "ba-test-seller.com"                                                               # TODO: Severin to create with corpEng
   frontend_dns_zone                  = "ba-test-seller-com"                                                               # Example: "sfe-gcp-com"
   frontend_domain_ssl_certificate_id = "projects/${local.gcp_project_id}/global/sslCertificates/google-managed-seller" # Example: "projects/${local.gcp_project_id}/global/sslCertificates/sfe-${local.environment}"
+  frontend_certificate_map_id        = "" # Example: "//certificatemanager.googleapis.com/projects/test/locations/global/certificateMaps/wildcard-cert-map"
+
   operator                           = "seller-1"                                                                         # what is this? Example: "seller-1"
   service_account_email              = "bidding-auction-seller@${local.gcp_project_id}.iam.gserviceaccount.com"            # Example: "terraform-sa@{local.gcp_project_id}.iam.gserviceaccount.com"
   vm_startup_delay_seconds           = 200                                                                                # Example: 200

@@ -23,13 +23,14 @@ export EXTRA_DOCKER_RUN_ARGS="${COMMON_DOCKER_RUN_ARGS[@]} ${DOCKER_RUN_ARGS[@]}
 #fetchMode 2 is local 
 
 export SERVER_START_CMD=$(cat << END
-/server \
+/server/bin/server \
 --init_config_client="false" \
 --port=50061 \
 --enable_auction_service_benchmark="true" \
---js_num_workers=4 \
+--udf_num_workers=4 \
 --js_worker_queue_len=100 \
 --test_mode="true" \
+--telemetry_config="mode: OFF" \
 --telemetry_config="mode: OFF" \
 --roma_timeout_ms="120000" \
 --enable_report_win_input_noising="false" \
@@ -58,9 +59,21 @@ END
 
 
 if [[ $1 == "--gdb" ]]; then
+  export PROJECT_ROOT=$(git rev-parse --show-toplevel)
+  declare -a -r DOCKER_RUN_ARGS=(
+    "--volume=${PROJECT_ROOT}/bazel-bin/services/auction_service/server:/server/bin/server"
+    "--name=auction"
+  )
+  export EXTRA_DOCKER_RUN_ARGS="${COMMON_DOCKER_RUN_ARGS[@]} ${DOCKER_RUN_ARGS[@]}"
   ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined \
   --docker-network test --image build-debian \
   --cmd "apt-get update && apt-get -y install gdb && gdb -ex=r --args ${SERVER_START_CMD}"
 else
-  ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined  --docker-network test --image build-debian --cmd  "${SERVER_START_CMD}"
+  docker_image_uri="$(docker load -i dist/debian/auction_service_image.tar | sed -nr "s/^Loaded image: (.*)$/\1/p")"
+  declare -a DOCKER_RUN_ARGS=(
+      "--network=host"
+      "--security-opt=seccomp=unconfined"
+      "--security-opt=apparmor=unconfined"
+  )
+  docker run -it "${DOCKER_RUN_ARGS[@]}" "${docker_image_uri}" -c "${SERVER_START_CMD}"
 fi
