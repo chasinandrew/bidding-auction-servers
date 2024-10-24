@@ -14,7 +14,7 @@
 
 locals {
   gcp_project_id = "arched-inkwell-368821"                                # Example: "your-gcp-project-123"
-  environment    = "demo"                                             # # Must be <= 3 characters. Example: "abc"
+  environment    = "non-prod"                                             # # Must be <= 3 characters. Example: "abc"
   image_repo     = "us-east4-docker.pkg.dev/arched-inkwell-368821/seller-41" # Example: "us-docker.pkg.dev/your-gcp-project-123/services"
 }
 

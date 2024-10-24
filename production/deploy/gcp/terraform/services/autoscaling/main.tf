@@ -110,7 +110,7 @@ resource "google_compute_region_instance_group_manager" "frontends" {
   for_each = google_compute_instance_template.frontends
 
   region                    = each.value.region
-  name                      = "${var.operator}-${var.environment}-${var.frontend_service_name}-${each.value.region}-mig"
+  name                      = "${var.operator}-demo-${var.frontend_service_name}-${each.value.region}-mig"
   distribution_policy_zones = var.region_config[each.value.region].frontend.zones
   version {
     instance_template = each.value.id
@@ -191,7 +191,7 @@ resource "google_compute_instance_template" "backends" {
   for_each = var.subnets
 
   region      = each.value.region
-  name        = "${var.operator}-${var.environment}-${var.backend_service_name}-${each.value.region}-it-${substr(replace(uuid(), "/-/", ""), 0, 8)}"
+  name        = "${var.operator}-demo-${var.backend_service_name}-${each.value.region}-it-${substr(replace(uuid(), "/-/", ""), 0, 8)}"
   provider    = google-beta
   description = "This template is used to create confidential compute instances, one service per instance."
   tags        = ["allow-hc", "allow-ssh", "allow-backend-ingress", "allow-all-egress"]
@@ -264,7 +264,7 @@ resource "google_compute_region_instance_group_manager" "backends" {
   for_each = google_compute_instance_template.backends
 
   region                    = each.value.region
-  name                      = "${var.operator}-${var.environment}-${var.backend_service_name}-${each.value.region}-mig"
+  name                      = "${var.operator}-demo-${var.backend_service_name}-${each.value.region}-mig"
   distribution_policy_zones = var.region_config[each.value.region].backend.zones
   version {
     instance_template = each.value.id
@@ -397,7 +397,7 @@ resource "google_compute_region_instance_group_manager" "collector" {
   for_each = google_compute_instance_template.collector
 
   region                    = each.value.region
-  name                      = "${var.operator}-${var.environment}-collector-${each.value.region}-mig"
+  name                      = "${var.operator}-demo-collector-${each.value.region}-mig"
   distribution_policy_zones = var.region_config[each.value.region].collector.zones
   version {
     instance_template = each.value.id
