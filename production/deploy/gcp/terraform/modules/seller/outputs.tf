@@ -7,5 +7,5 @@ output "environment" {
 }
 
 output "frontend_domain_name" {
-    value = var.seller_frontend_image
+    value = var.frontend_domain_name
 }
