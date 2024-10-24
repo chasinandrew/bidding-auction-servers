@@ -25,4 +25,8 @@ terraform {
       version = "5.31.0"
     }
   }
+  backend "gcs" {
+    bucket = "terraform-state-bas"
+    prefix = "demo"
+  }
 }

@@ -13,9 +13,9 @@
 # limitations under the License.
 
 locals {
-  gcp_project_id = "" # Example: "your-gcp-project-123"
-  environment    = "" # # Must be <= 3 characters. Example: "abc"
-  image_repo     = "" # Example: "us-docker.pkg.dev/your-gcp-project-123/services"
+  gcp_project_id = "arched-inkwell-368821" # Example: "your-gcp-project-123"
+  environment    = "dev" # # Must be <= 3 characters. Example: "abc"
+  image_repo     = "us-east4-docker.pkg.dev/arched-inkwell-368821/seller-41" # Example: "us-docker.pkg.dev/your-gcp-project-123/services"
 
 }
 
