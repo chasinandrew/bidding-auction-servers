@@ -26,7 +26,7 @@ terraform {
     }
   }
   backend "gcs" {
-    bucket = "terraform-state-bas"
-    prefix = "demo"
+    bucket = "terraform-seller-apis"
+    prefix = "non-prod"
   }
 }
