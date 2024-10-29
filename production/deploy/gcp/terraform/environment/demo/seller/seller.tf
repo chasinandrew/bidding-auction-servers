@@ -13,9 +13,9 @@
 # limitations under the License.
 
 locals {
-  gcp_project_id = "gtech-privacy-baservices-dev"                                # Example: "your-gcp-project-123"
+  gcp_project_id = "arched-inkwell-368821"                                # Example: "your-gcp-project-123"
   environment    = "non-prod"                                             # # Must be <= 3 characters. Example: "abc"
-  image_repo     = "us-east4-docker.pkg.dev/gtech-privacy-baservices-dev/seller-41" # Example: "us-docker.pkg.dev/your-gcp-project-123/services"
+  image_repo     = "us-east4-docker.pkg.dev/arched-inkwell-368821/seller-41" # Example: "us-docker.pkg.dev/your-gcp-project-123/services"
 }
 
 provider "google" {
@@ -142,9 +142,9 @@ module "seller" {
   # Please manually create a Google Cloud domain name, dns zone, and SSL certificate.
   # See demo/project_setup_utils/domain_setup/README.md for more details.
   # If you specify a certificate_map_id, you do not need to specify an ssl_certificate_id.
-  frontend_domain_name               = "ba-seller-gtech.com"                                                               # TODO: Severin to create with corpEng
-  frontend_dns_zone                  = "ba-seller-gtech-com"                                                               # Example: "sfe-gcp-com"
-  frontend_domain_ssl_certificate_id = "projects/${local.gcp_project_id}/global/sslCertificates/seller-cert" # Example: "projects/${local.gcp_project_id}/global/sslCertificates/sfe-${local.environment}"
+  frontend_domain_name               = "ba-test-seller.com"                                                               # TODO: Severin to create with corpEng
+  frontend_dns_zone                  = "ba-test-seller-com"                                                               # Example: "sfe-gcp-com"
+  frontend_domain_ssl_certificate_id = "projects/${local.gcp_project_id}/global/sslCertificates/google-managed-seller" # Example: "projects/${local.gcp_project_id}/global/sslCertificates/sfe-${local.environment}"
   frontend_certificate_map_id        = "" # Example: "//certificatemanager.googleapis.com/projects/test/locations/global/certificateMaps/wildcard-cert-map"
 
   operator                           = "seller-1"                                                                         # what is this? Example: "seller-1"
