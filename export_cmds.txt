@@ -1,0 +1,5 @@
+export SELLER_ORIGIN_DOMAIN="https://privacy-sandbox-demos-ssp-x.dev"
+export KEY_VALUE_SIGNALS_HOST="http://privacy-sandbox-demos-ssp-x.dev:8080/uc-ba/service/kv" 
+export AUCTION_JS_URL="http://privacy-sandbox-demos-ssp-x.dev:8080/uc-ba/js/decision-logic.js" 
+export BUYER_KV_SERVER_ADDR="http://privacy-sandbox-demos-dsp-x.dev:8080/uc-ba/service/kv"
+export BIDDING_JS_URL="http://privacy-sandbox-demos-dsp-x.dev:8080/uc-ba/js/bidding-logic.js" 

@@ -1,0 +1,42 @@
+{
+    "auction_config": {
+        "auction_signals": "{}",
+        "buyer_list": ["Placeholder-Should-Match-With-The-Keys-In-BUYER_SERVER_HOSTS-In-SFE"],
+        "buyer_timeout_ms": 100000,
+        "per_buyer_config": {
+            "Placeholder-Should-Match-With-The-Keys-In-BUYER_SERVER_HOSTS-In-SFE": {
+                "buyer_debug_id": "Buyer-Debug-ID-Useful-For-Debugging",
+                "buyer_signals": "{}"
+            }
+        },
+        "seller": "https://privacy-sandbox-demos-ssp-x.dev",
+        "seller_debug_id": "Seller-Debug-ID-Useful-For-Debugging",
+        "seller_signals": "[]"
+    },
+    "client_type": "CLIENT_TYPE_BROWSER",
+    "raw_protected_audience_input": {
+        "generation_id": "A-UUID",
+        "publisher_name": "example.com",
+        "raw_buyer_input": {
+            "Placeholder-Should-Match-With-Keys-In-BUYER_SERVER_HOSTS-In-SFE": {
+                "interest_groups": [
+                    {
+                        "ad_render_ids": [
+                            "test_id-That-Will-Be-Used-To-Generated-Ad-Render-Id-In-GenerateBid"
+                        ],
+                        "bidding_signals_keys": [
+                            "Sample-key-To-Be-Used-To-Lookup-Real-Time-Signals-From-Buyer-KV"
+                        ],
+                        "browser_signals": {
+                            "bid_count": "1",
+                            "join_count": "2",
+                            "prev_wins": "[]"
+                        },
+                        "name": "Test-Interest-Group-Name",
+                        "user_bidding_signals": "[]"
+                    }
+                ]
+            }
+        }
+    }
+}

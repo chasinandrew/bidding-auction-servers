@@ -18,13 +18,13 @@ source $(dirname "$0")/common
 export SERVER_START_CMD=$(cat << END
 /server/bin/server \
 --init_config_client="false" --port=50053 \
---auction_server_host="127.0.0.1:50061" \
+--auction_server_host="172.18.0.102:50061" \
 --key_value_signals_host="${KEY_VALUE_SIGNALS_HOST}" \
 --seller_origin_domain="${SELLER_ORIGIN_DOMAIN}" \
 --seller_cloud_platforms_map='{"component-seller1.com":"GCP", "component-seller2.com":"AWS"}' \
 --buyer_server_hosts='{
-  "${BUYER_SERVER_HOST}": {
-    "url": "127.0.0.1:50051",
+  "https://privacy-sandbox-demos-dsp-x.dev": {
+    "url": "172.18.0.103:50051",
     "cloudPlatform": "LOCAL"
   }
 }' \
@@ -34,10 +34,10 @@ export SERVER_START_CMD=$(cat << END
 --create_new_event_engine="false" \
 --test_mode="true" \
 --enable_chaffing="false" \
---telemetry_config="mode: EXPERIMENT" \
---enable_otel_based_logging="true" \
+--telemetry_config="mode: OFF" \
+--enable_otel_based_logging="false" \
 --consented_debug_token="test_token" \
---ps_verbosity=2 \
+--ps_verbosity=10 \
 --enable_protected_audience="true" \
 --sfe_tcmalloc_background_release_rate_bytes_per_second=4096 \
 --sfe_tcmalloc_max_total_thread_cache_bytes=10737418240 \
@@ -53,12 +53,13 @@ if [[ $1 == "--gdb" ]]; then
   )
   export EXTRA_DOCKER_RUN_ARGS="${COMMON_DOCKER_RUN_ARGS[@]} ${DOCKER_RUN_ARGS[@]}"
   ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined \
-  --docker-network host --image build-debian \
+  --docker-network sandcastle-network --image build-debian \
   --cmd "apt-get update && apt-get -y install gdb && gdb -ex=r --args ${SERVER_START_CMD}"
 else
   docker_image_uri="$(docker load -i dist/debian/seller_frontend_service_image.tar | sed -nr "s/^Loaded image: (.*)$/\1/p")"
   declare -a DOCKER_RUN_ARGS=(
-      "--network=host"
+      "--network=sandcastle-network"
+      "--ip=172.18.0.104"
       "--security-opt=seccomp=unconfined"
       "--security-opt=apparmor=unconfined"
   )

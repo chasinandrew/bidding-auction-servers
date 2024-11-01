@@ -19,7 +19,7 @@ export EXTRA_DOCKER_RUN_ARGS="${COMMON_DOCKER_RUN_ARGS[@]} ${DOCKER_RUN_ARGS[@]}
 export SERVER_START_CMD=$(cat << END
 /server/bin/server \
 --init_config_client="false" --port=50051 \
---bidding_server_addr="127.0.0.1:50057" \
+--bidding_server_addr="172.18.0.101:50057" \
 --buyer_kv_server_addr="${BUYER_KV_SERVER_ADDR}" \
 --enable_buyer_frontend_benchmarking="true" \
 --generate_bid_timeout_ms=60000 --bidding_signals_load_timeout_ms 60000 \
@@ -29,7 +29,7 @@ export SERVER_START_CMD=$(cat << END
 --telemetry_config="mode: OFF" \
 --enable_otel_based_logging="true" \
 --consented_debug_token="test_token" \
---ps_verbosity=2 \
+--ps_verbosity=10 \
 --enable_chaffing="false" \
 --enable_protected_audience="true" \
 --bfe_tcmalloc_background_release_rate_bytes_per_second=4096 \
@@ -45,12 +45,13 @@ if [[ $1 == "--gdb" ]]; then
     "--name=bfe"
   )
   ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined \
-  --docker-network host --image build-debian \
+  --docker-network sandcastle-network --image build-debian \
   --cmd "apt-get update && apt-get -y install gdb && gdb -ex=r --args ${SERVER_START_CMD}"
 else
   docker_image_uri="$(docker load -i dist/debian/buyer_frontend_service_image.tar | sed -nr "s/^Loaded image: (.*)$/\1/p")"
   declare -a DOCKER_RUN_ARGS=(
-      "--network=host"
+      "--network=sandcastle-network"
+      "--ip=172.18.0.103"
       "--security-opt=seccomp=unconfined"
       "--security-opt=apparmor=unconfined"
   )

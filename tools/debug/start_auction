@@ -41,7 +41,7 @@ export SERVER_START_CMD=$(cat << END
     }' \
 --enable_otel_based_logging="true" \
 --consented_debug_token="test_token" \
---ps_verbosity=2 \
+--ps_verbosity=10 \
 --enable_protected_audience="true" \
 --auction_tcmalloc_background_release_rate_bytes_per_second=4096 \
 --auction_tcmalloc_max_total_thread_cache_bytes=10737418240 \
@@ -58,12 +58,13 @@ if [[ $1 == "--gdb" ]]; then
   )
   export EXTRA_DOCKER_RUN_ARGS="${COMMON_DOCKER_RUN_ARGS[@]} ${DOCKER_RUN_ARGS[@]}"
   ${PROJECT_ROOT}/builders/tools/cbuild --seccomp-unconfined \
-  --docker-network host --image build-debian \
+  --docker-network sandcastle-network --image build-debian \
   --cmd "apt-get update && apt-get -y install gdb && gdb -ex=r --args ${SERVER_START_CMD}"
 else
   docker_image_uri="$(docker load -i dist/debian/auction_service_image.tar | sed -nr "s/^Loaded image: (.*)$/\1/p")"
   declare -a DOCKER_RUN_ARGS=(
-      "--network=host"
+      "--network=sandcastle-network"
+      "--ip=172.18.0.102"
       "--security-opt=seccomp=unconfined"
       "--security-opt=apparmor=unconfined"
   )
