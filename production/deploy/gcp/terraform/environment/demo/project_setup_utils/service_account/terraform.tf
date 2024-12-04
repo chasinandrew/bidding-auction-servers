@@ -23,7 +23,7 @@ terraform {
   }
 
   backend "gcs" {
-    bucket = ""
-    prefix = "terraform-state"
+    bucket = "terraform-seller-apis"
+    prefix = "terraform-state-service-account"
   }
 }
