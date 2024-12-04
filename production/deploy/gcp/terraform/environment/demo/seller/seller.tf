@@ -14,7 +14,7 @@
 
 locals {
   gcp_project_id = "arched-inkwell-368821"                                # Example: "your-gcp-project-123"
-  environment    = "test"                                             # # Must be <= 3 characters. Example: "abc"
+  environment    = "non-prod"                                             # # Must be <= 3 characters. Example: "abc"
   image_repo     = "us-east4-docker.pkg.dev/arched-inkwell-368821/seller-41" # Example: "us-docker.pkg.dev/your-gcp-project-123/services"
 }
 
@@ -148,10 +148,10 @@ module "seller" {
   frontend_certificate_map_id        = "" # Example: "//certificatemanager.googleapis.com/projects/test/locations/global/certificateMaps/wildcard-cert-map"
 
   operator                           = "seller-1"                                                                         # what is this? Example: "seller-1"
-  service_account_email              = "bidding-auction-seller@${local.gcp_project_id}.iam.gserviceaccount.com"            # Example: "terraform-sa@{local.gcp_project_id}.iam.gserviceaccount.com"
+  service_account_email              = "new-ba-sa@${local.gcp_project_id}.iam.gserviceaccount.com"            # Example: "terraform-sa@{local.gcp_project_id}.iam.gserviceaccount.com"
   vm_startup_delay_seconds           = 200                                                                                # Example: 200
   cpu_utilization_percent            = 0.6                                                                                # Example: 0.6
-  use_confidential_space_debug_image = true                                                                              # Example: false
+  use_confidential_space_debug_image = false                                                                              # Example: false
   tee_impersonate_service_accounts   = "a-opallowedusr@ps-pa-coord-prd-g3p-svcacc.iam.gserviceaccount.com,b-opallowedusr@ps-prod-pa-type2-fe82.iam.gserviceaccount.com"
   collector_service_port             = 4317
   collector_startup_script = templatefile("../../../services/autoscaling/collector_startup.tftpl", {
@@ -174,14 +174,14 @@ module "seller" {
         max_rate_per_instance = null # Null signifies no max.
       }
       backend = {
-        machine_type          = "n2d-standard-64"
+        machine_type          = "n2d-standard-8"
         min_replicas          = 1
         max_replicas          = 5
         zones                 = null # Null signifies no zone preference.
         max_rate_per_instance = null # Null signifies no max.
       }
       frontend = {
-        machine_type          = "n2d-standard-64"
+        machine_type          = "n2d-standard-4"
         min_replicas          = 1
         max_replicas          = 2
         zones                 = null # Null signifies no zone preference.
@@ -189,5 +189,5 @@ module "seller" {
       }
     }
   }
-  enable_tee_container_log_redirect = false
+  enable_tee_container_log_redirect = true
 }
